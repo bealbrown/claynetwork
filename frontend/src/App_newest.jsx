@@ -444,12 +444,8 @@ const Graph3DVisualization = () => {
                         pan.
                     </p>
                     <p>
-                        This page is optimized for computers and tablets, and
-                        doesn't really work on phones right now (and may never)
-                    </p>{" "}
-                    <p>
-                        Finally, I'm working on improving this dataset, which
-                        will include a more complete scrape of Wikipedia (all
+                        I'm working on improving this dataset, which will
+                        include a more complete scrape of Wikipedia (all
                         languages!), as well as including other sources of
                         information linking potters and ceramicists together.
                     </p>
