@@ -1,3 +1,4 @@
 *.db
 db_csv/*
 __pycache__/*
+*node_modules*
