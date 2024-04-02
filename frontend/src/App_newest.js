@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { ForceGraph2D, ForceGraph3D } from 'react-force-graph';
-import axios from 'axios';
+
 import SpriteText from 'three-spritetext';
 import citizenshipColorMap from './citizenshipColorMap';
 import Fuse from 'fuse.js'; // Import Fuse.js
@@ -28,8 +28,9 @@ const Graph3DVisualization = () => {
     useEffect(() => {
         const fetchGraphData = async () => {
             try {
-                const response = await axios.get('http://192.168.2.54:5000/api/network');
-                const { nodes, edges } = response.data;
+
+                const response = await fetch('/ceramics_data.json');
+                const { nodes, edges } = await response.json();
 
                 const formattedNodes = nodes.map(node => ({
                     id: node.wikibase_item,

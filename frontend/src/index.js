@@ -1,9 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
-import App3d from './App_3d';
-import App_with_neighbors from './App_3d_with_neighbors';
 import App_newest from './App_newest';
 import reportWebVitals from './reportWebVitals';
 
