@@ -428,8 +428,8 @@ const Graph3DVisualization = () => {
                     <p>
                         This project visualizes the connections between potters
                         and ceramicists who have pages on Wikipedia. The dots
-                        (also called nodes) are individual potters, and the
-                        lines between them represent relationships, which may be
+                        (also called nodes) are individual people, and the lines
+                        between them represent relationships, which may be
                         teacher/student or merely acquaintance.{" "}
                     </p>{" "}
                     <p>
