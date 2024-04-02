@@ -1,23 +1,23 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { ForceGraph2D, ForceGraph3D } from 'react-force-graph';
+import React, { useState, useEffect, useRef } from 'react';
+import { ForceGraph3D } from 'react-force-graph';
 
-import SpriteText from 'three-spritetext';
+
 import citizenshipColorMap from './citizenshipColorMap';
 import Fuse from 'fuse.js'; // Import Fuse.js
 
 
 const Graph3DVisualization = () => {
     const [graphData, setGraphData] = useState({ nodes: [], links: [] });
-    const [nodeSize, setNodeSize] = useState(3); // Default node size
-    const [showNames, setShowNames] = useState(true); // Toggle between names and dots
+    // const [nodeSize, setNodeSize] = useState(10); // Default node size
+    // const [showNames, setShowNames] = useState(true); // Toggle between names and dots
     const [selectedNode, setSelectedNode] = useState(null); // For the data popup
     const [iframeUrl, setIframeUrl] = useState(''); // For the Wikipedia iframe
     const [showIframe, setShowIframe] = useState(false); // Toggle iframe display
-    const graphContainerRef = useRef(null);
+    // const graphContainerRef = useRef(null);
     const [highlightNodes, setHighlightNodes] = useState(new Set());
     const [highlightLinks, setHighlightLinks] = useState(new Set());
 
-    const [hoverNode, setHoverNode] = useState(null);
+    // const [hoverNode, setHoverNode] = useState(null);
     const [searchInput, setSearchInput] = useState(''); // For the search input
     const [filteredNodes, setFilteredNodes] = useState([]); // For the search autofill results
     const searchInputRef = useRef(null);
@@ -112,15 +112,15 @@ const Graph3DVisualization = () => {
         setHighlightLinks(highlightLinks);
     };
 
-    const highlightAllNodes = () => {
+    // const highlightAllNodes = () => {
 
-        highlightNodes.clear();
-        highlightLinks.clear();
-        // Add all nodes and links back to their respective highlight sets if you want them all visible
-        graphData.nodes.forEach(node => highlightNodes.add(node));
-        graphData.links.forEach(link => highlightLinks.add(link));
-        updateHighlight()
-    };
+    //     highlightNodes.clear();
+    //     highlightLinks.clear();
+    //     // Add all nodes and links back to their respective highlight sets if you want them all visible
+    //     graphData.nodes.forEach(node => highlightNodes.add(node));
+    //     graphData.links.forEach(link => highlightLinks.add(link));
+    //     updateHighlight()
+    // };
 
     const unhighlightAllNodes = () => {
 
@@ -242,8 +242,8 @@ const Graph3DVisualization = () => {
             if (selectedNode && selectedNode.id === node.id) {
                 setSelectedNode(null); // Deselect
                 setShowIframe(false);
-                console.log("SAME NODE CLICKED AGAIN");
-                // Optionally call unhighlightAllNodes() here if you want to reset highlights on deselecting
+                console.log("Same node clicked again");
+
             } else {
                 console.log("node clicked ", node);
                 setSelectedNode(node);
@@ -275,7 +275,7 @@ const Graph3DVisualization = () => {
 
     };
 
-
+    // Search functionality
     useEffect(() => {
         if (searchInput.length > 2) {
             const fuseOptions = {
@@ -308,13 +308,13 @@ const Graph3DVisualization = () => {
     //     };
     // }, [showIframe]);
 
-    const connectedEdges = selectedNode ? graphData.links.filter(link => link.source === selectedNode.id || link.target === selectedNode.id) : [];
+    // const connectedEdges = selectedNode ? graphData.links.filter(link => link.source === selectedNode.id || link.target === selectedNode.id) : [];
 
-    const connectionsDisplay = connectedEdges.map((link, index) => (
-        <div key={index}>
-      <p>Connection {index + 1}: {link.article_context}</p>
-    </div>
-    ));
+    // const connectionsDisplay = connectedEdges.map((link, index) => (
+    //     <div key={index}>
+    //   <p>Connection {index + 1}: {link.article_context}</p>
+    // </div>
+    // ));
 
     const onDropdownItemClick = (node, event) => {
         event.stopPropagation(); // Prevent click event from propagating to window
@@ -352,14 +352,20 @@ const Graph3DVisualization = () => {
           )}
         </div>
 
-        <
-        ForceGraph3D graphData = { graphData } nodeAutoColorBy = "citizenship"
-        enableNodeDrag={false}
-        backgroundColor = "#222"
-        nodeLabel = { showNames ? 'name' : '' } nodeRelSize = { 10 } onNodeClick = { handleNodeClick } linkWidth = { link => highlightLinks.has(link) ? 2.5 : 1 } nodeCanvasObjectMode = { node => highlightNodes.has(node) ? 'before' : undefined } nodeCanvasObject = { nodeCanvasObject }
-        // onNodeHover={handleNodeHover}
-        // onLinkHover={handleLinkHover}
-        linkColor = { linkColor } nodeColor = { nodeColor }
+        <ForceGraph3D 
+            graphData = { graphData } 
+            nodeAutoColorBy = "citizenship"
+            enableNodeDrag = { false } 
+            backgroundColor = "#222"
+            // nodeLabel = { showNames ? 'name' : '' } 
+            nodeRelSize = { 10 } 
+            onNodeClick = { handleNodeClick } 
+            linkWidth = { link => highlightLinks.has(link) ? 2.5 : 1 } 
+            nodeCanvasObjectMode = { node => highlightNodes.has(node) ? 'before' : undefined } 
+            nodeCanvasObject = { nodeCanvasObject }
+            // onNodeHover={handleNodeHover}
+            // onLinkHover={handleLinkHover}
+            linkColor = { linkColor } nodeColor = { nodeColor }
         />
 
         {
