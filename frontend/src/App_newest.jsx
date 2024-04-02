@@ -15,6 +15,8 @@ const Graph3DVisualization = () => {
     const [highlightNodes, setHighlightNodes] = useState(new Set());
     const [highlightLinks, setHighlightLinks] = useState(new Set());
 
+    const [showModal, setShowModal] = useState(true);
+
     // const [hoverNode, setHoverNode] = useState(null);
     const [searchInput, setSearchInput] = useState(""); // For the search input
     const [filteredNodes, setFilteredNodes] = useState([]); // For the search autofill results
@@ -407,6 +409,65 @@ const Graph3DVisualization = () => {
                     ></iframe>
                 </div>
             )}{" "}
+            {showModal && (
+                <div
+                    style={{
+                        position: "fixed",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        backgroundColor: "white",
+                        padding: "20px",
+                        zIndex: 1000,
+                        maxWidth: "80%",
+                        borderRadius: "10px",
+                        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                    }}
+                >
+                    <h2>Welcome to a beta preview of Clay.Network!</h2>
+                    <p>
+                        This project visualizes the connections between potters
+                        and ceramicists who have pages on Wikipedia. The dots
+                        (also called nodes) are individual potters, and the
+                        lines between them represent relationships, which may be
+                        teacher/student or merely acquaintance.{" "}
+                    </p>{" "}
+                    <p>
+                        To explore the data, you can click a dot/node, and it
+                        will open the Wikipedia page for that person, as well as
+                        show you their immediate relationships. Also, you can
+                        search for people using the search bar in the top right!
+                    </p>{" "}
+                    <p>
+                        You can see the camera controls on the bottom: left
+                        click to rotate, mouse wheel to zoom, and right click to
+                        pan.
+                    </p>
+                    <p>
+                        This page is optimized for computers and tablets, and
+                        doesn't really work on phones right now (and may never)
+                    </p>{" "}
+                    <p>
+                        Finally, I'm working on improving this dataset, which
+                        will include a more complete scrape of Wikipedia (all
+                        languages!), as well as including other sources of
+                        information linking potters and ceramicists together.
+                    </p>
+                    <button
+                        onClick={() => setShowModal(false)}
+                        style={{
+                            padding: "10px 20px",
+                            cursor: "pointer",
+                            border: "none",
+                            borderRadius: "5px",
+                            backgroundColor: "#007bff",
+                            color: "white",
+                        }}
+                    >
+                        Ok!
+                    </button>
+                </div>
+            )}
         </div>
     );
 };
