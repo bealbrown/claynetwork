@@ -4,8 +4,8 @@ import ReactDOM from "react-dom/client";
 import App from "./App_newest.jsx";
 import "./index.css";
 
-import preview1 from "../public/preview.jpg";
-import preview2 from "../public/preview2.jpg";
+import preview1 from "./assets/preview.jpg";
+import preview2 from "./assets/preview2.jpg";
 
 const RootComponent = () => {
   const [isPhone, setIsPhone] = useState(false);
@@ -13,7 +13,7 @@ const RootComponent = () => {
   useEffect(() => {
     // Function to update the state based on device width
     const handleResize = () => {
-      if (window.innerWidth <= 768) {
+      if (window.innerWidth <= 800) {
         setIsPhone(true);
       } else {
         setIsPhone(false);

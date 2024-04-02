@@ -394,6 +394,7 @@ const Graph3DVisualization = () => {
                         left: "10px",
                         top: "10px",
                         width: "30%",
+                        minWidth: "500px",
                         height: "100%",
                         zIndex: 10000,
                     }}
