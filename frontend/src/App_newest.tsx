@@ -391,8 +391,7 @@ const Graph3DVisualization = () => {
             </iframe>
           </div>
             )
-        } <
-        /div>
+        } </div>
     );
 };
 
