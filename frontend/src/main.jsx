@@ -4,8 +4,8 @@ import ReactDOM from "react-dom/client";
 import App from "./App_newest.jsx";
 import "./index.css";
 
-import preview1 from "../public/preview.png";
-import preview2 from "../public/preview2.png";
+import preview1 from "../public/preview.jpg";
+import preview2 from "../public/preview2.jpg";
 
 const RootComponent = () => {
   const [isPhone, setIsPhone] = useState(false);
