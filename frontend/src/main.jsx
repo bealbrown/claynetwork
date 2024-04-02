@@ -46,8 +46,8 @@ const RootComponent = () => {
         />{" "}
         <p>
           {" "}
-          This application is not optimized for phones and may not work as
-          expected. <b> Please use a desktop or tablet! </b>
+          This application displays a lot of data, and would not really be
+          usable on a phone. <b> Please use a desktop or tablet! </b>
         </p>
         <p>
           Welcome to the beta preview of clay.network, a project that explores
