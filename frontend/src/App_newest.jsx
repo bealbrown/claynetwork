@@ -1,38 +1,38 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { ForceGraph3D } from 'react-force-graph';
+import React, { useState, useEffect, useRef } from "react";
+import { ForceGraph3D } from "react-force-graph";
 
-
-import citizenshipColorMap from './citizenshipColorMap';
-import Fuse from 'fuse.js'; // Import Fuse.js
-
+import citizenshipColorMap from "./citizenshipColorMap";
+import Fuse from "fuse.js"; // Import Fuse.js
 
 const Graph3DVisualization = () => {
     const [graphData, setGraphData] = useState({ nodes: [], links: [] });
     // const [nodeSize, setNodeSize] = useState(10); // Default node size
     // const [showNames, setShowNames] = useState(true); // Toggle between names and dots
     const [selectedNode, setSelectedNode] = useState(null); // For the data popup
-    const [iframeUrl, setIframeUrl] = useState(''); // For the Wikipedia iframe
+    const [iframeUrl, setIframeUrl] = useState(""); // For the Wikipedia iframe
     const [showIframe, setShowIframe] = useState(false); // Toggle iframe display
     // const graphContainerRef = useRef(null);
     const [highlightNodes, setHighlightNodes] = useState(new Set());
     const [highlightLinks, setHighlightLinks] = useState(new Set());
 
     // const [hoverNode, setHoverNode] = useState(null);
-    const [searchInput, setSearchInput] = useState(''); // For the search input
+    const [searchInput, setSearchInput] = useState(""); // For the search input
     const [filteredNodes, setFilteredNodes] = useState([]); // For the search autofill results
     const searchInputRef = useRef(null);
     const dropdownRef = useRef(null);
 
-    const linkColor = link => highlightLinks.has(link) ? 'rgba(255, 255, 255, 2)' : 'rgba(255, 255, 255, 0.2)';
+    const linkColor = (link) =>
+        highlightLinks.has(link)
+            ? "rgba(255, 255, 255, 2)"
+            : "rgba(255, 255, 255, 0.2)";
 
     useEffect(() => {
         const fetchGraphData = async () => {
             try {
-
-                const response = await fetch('/ceramics_data.json');
+                const response = await fetch("/ceramics_data.json");
                 const { nodes, edges } = await response.json();
 
-                const formattedNodes = nodes.map(node => ({
+                const formattedNodes = nodes.map((node) => ({
                     id: node.wikibase_item,
                     name: node.canonical_title,
                     wikipedia_url: node.wikipedia_url,
@@ -40,11 +40,11 @@ const Graph3DVisualization = () => {
                     citizenship: node.citizenship,
                     birthdate: node.birthdate,
                     birthplace: node.birthplace,
-                    deathdate: node.deathdate
+                    deathdate: node.deathdate,
                     // Add other node properties you wish to visualize
                 }));
 
-                const formattedEdges = edges.map(edge => ({
+                const formattedEdges = edges.map((edge) => ({
                     source: edge.source,
                     target: edge.target,
                     article_context: edge.article_context,
@@ -56,13 +56,16 @@ const Graph3DVisualization = () => {
                     return map;
                 }, {});
 
-                formattedEdges.forEach(link => {
+                formattedEdges.forEach((link) => {
                     const a = nodeMap[link.source];
                     const b = nodeMap[link.target];
 
                     if (!a || !b) {
                         // If either node is not found by ID, skip this link
-                        console.warn('Skipping link with unknown node(s):', link);
+                        console.warn(
+                            "Skipping link with unknown node(s):",
+                            link,
+                        );
                         return;
                     }
 
@@ -77,13 +80,10 @@ const Graph3DVisualization = () => {
                     b.links.push(link);
                 });
 
-
                 setGraphData({
                     nodes: formattedNodes,
                     links: formattedEdges,
                 });
-
-
             } catch (error) {
                 console.error("Failed to fetch graph data: ", error);
             }
@@ -92,18 +92,17 @@ const Graph3DVisualization = () => {
         fetchGraphData();
     }, []);
 
-
-
-    const nodeColor = node => {
+    const nodeColor = (node) => {
         // Check if there are highlighted nodes and the current node is not one of them
         if (highlightNodes.size > 0 && !highlightNodes.has(node)) {
-            return 'rgba(255, 255, 255, 0.1)'; // Dimmed color for non-highlighted nodes
+            return "rgba(255, 255, 255, 0.1)"; // Dimmed color for non-highlighted nodes
         } else if (highlightNodes.has(node)) {
-            return 'rgba(255, 255, 255, 1)'; // Highlight color
+            return "rgba(255, 255, 255, 1)"; // Highlight color
         }
 
         // Use the citizenship value of the node to get the corresponding color
-        const color = citizenshipColorMap[node.citizenship] || 'rgba(255, 255, 255, 0.1)'; // Fallback color
+        const color =
+            citizenshipColorMap[node.citizenship] || "rgba(255, 255, 255, 0.1)"; // Fallback color
         return color;
     };
 
@@ -123,31 +122,28 @@ const Graph3DVisualization = () => {
     // };
 
     const unhighlightAllNodes = () => {
-
-        console.log(graphData)
+        console.log(graphData);
 
         highlightNodes.clear();
         highlightLinks.clear();
 
-        console.log("unhighlightAllNodes")
+        console.log("unhighlightAllNodes");
 
         // // Add all nodes and links back to their respective highlight sets if you want them all visible
         // graphData.nodes.forEach(node => highlightNodes.add(node));
         // graphData.links.forEach(link => highlightLinks.add(link));
-        updateHighlight()
+        updateHighlight();
     };
 
     const highlightOnlySelectedNodeGroup = (node) => {
         highlightNodes.clear();
         highlightLinks.clear();
         highlightNodes.add(node);
-        node.neighbors.forEach(neighbor => highlightNodes.add(neighbor));
-        node.links.forEach(link => highlightLinks.add(link));
+        node.neighbors.forEach((neighbor) => highlightNodes.add(neighbor));
+        node.links.forEach((link) => highlightLinks.add(link));
 
         updateHighlight();
-    }
-
-
+    };
 
     const nodeCanvasObject = (node, ctx, globalScale) => {
         const label = node.name;
@@ -156,7 +152,7 @@ const Graph3DVisualization = () => {
         const alpha = 1;
         ctx.globalAlpha = alpha; // Apply full opacity
         ctx.font = `${fontSize}px Sans-Serif`;
-        ctx.fillStyle = 'rgba(255, 255, 255, 1)'; // Node fill color
+        ctx.fillStyle = "rgba(255, 255, 255, 1)"; // Node fill color
         ctx.fillText(label, node.x, node.y);
     };
 
@@ -175,15 +171,19 @@ const Graph3DVisualization = () => {
             const endY = event.pageY;
 
             // Calculate the distance between start and end positions
-            const distance = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
+            const distance = Math.sqrt(
+                Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2),
+            );
 
             // If the distance is less than the threshold, consider it a click, not a drag/swipe
 
             try {
-
                 if (distance < threshold) {
-
-                    if (showIframe && !event.target.closest('.iframe-container') && !searchInputRef.current.contains(event.target)) {
+                    if (
+                        showIframe &&
+                        !event.target.closest(".iframe-container") &&
+                        !searchInputRef.current.contains(event.target)
+                    ) {
                         setShowIframe(false);
                         setSelectedNode(null); // Deselect
 
@@ -194,27 +194,24 @@ const Graph3DVisualization = () => {
                         setShowIframe(false);
                         // Clearing highlights
                         // highlightAllNodes()
-                        unhighlightAllNodes()
+                        unhighlightAllNodes();
                     }
-
                 }
-
             } catch (e) {
-                console.log(e)
+                console.log(e);
             }
         };
 
         // Add event listeners for both mousedown and click
-        document.addEventListener('mousedown', handleMouseDown);
-        document.addEventListener('click', handleClickOutside);
+        document.addEventListener("mousedown", handleMouseDown);
+        document.addEventListener("click", handleClickOutside);
 
         // Cleanup
         return () => {
-            document.removeEventListener('mousedown', handleMouseDown);
-            document.removeEventListener('click', handleClickOutside);
+            document.removeEventListener("mousedown", handleMouseDown);
+            document.removeEventListener("click", handleClickOutside);
         };
     }, [showIframe]); // Dependency on showIframe only
-
 
     // useEffect(() => {
     //     const handleClickOutside = event => {
@@ -229,9 +226,9 @@ const Graph3DVisualization = () => {
     //     };
     // }, [showIframe]);
 
-    const handleNodeClick = node => {
+    const handleNodeClick = (node) => {
         // Check if the node is in the highlightNodes set
-        console.log("highlightNodes is", highlightNodes)
+        console.log("highlightNodes is", highlightNodes);
         if (!highlightNodes.has(node) && highlightNodes.size > 0) {
             // If the node is not highlighted and there are highlighted nodes, exit the function
             console.log("Unclickable node clicked");
@@ -243,7 +240,6 @@ const Graph3DVisualization = () => {
                 setSelectedNode(null); // Deselect
                 setShowIframe(false);
                 console.log("Same node clicked again");
-
             } else {
                 console.log("node clicked ", node);
                 setSelectedNode(node);
@@ -259,20 +255,21 @@ const Graph3DVisualization = () => {
     };
 
     // Function to simulate a node click based on the search input
-    const simulateNodeClick = nodeName => {
+    const simulateNodeClick = (nodeName) => {
         console.log("node simulatedly clicked");
-        const node = graphData.nodes.find(n => n.name.toLowerCase() === nodeName.toLowerCase());
+        const node = graphData.nodes.find(
+            (n) => n.name.toLowerCase() === nodeName.toLowerCase(),
+        );
 
         console.log("node found", node);
         if (node) {
             handleNodeClick(node);
-            setSearchInput('');
+            setSearchInput("");
             setFilteredNodes([]);
             setShowIframe(true);
             setIframeUrl(node.wikipedia_url);
-            console.log("showed the iframe")
+            console.log("showed the iframe");
         }
-
     };
 
     // Search functionality
@@ -280,7 +277,7 @@ const Graph3DVisualization = () => {
         if (searchInput.length > 2) {
             const fuseOptions = {
                 includeScore: true,
-                keys: ['name']
+                keys: ["name"],
             };
             const fuse = new Fuse(graphData.nodes, fuseOptions);
 
@@ -290,9 +287,6 @@ const Graph3DVisualization = () => {
             setFilteredNodes([]);
         }
     }, [searchInput, graphData.nodes]);
-
-
-
 
     // // Listen for clicks to close the iframe if clicking outside
     // useEffect(() => {
@@ -321,83 +315,103 @@ const Graph3DVisualization = () => {
         simulateNodeClick(node.name);
     };
 
-
     return (
         <div>
-        <div ref={searchInputRef} style={{ position: 'absolute', right: '10px', top: '10px', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-          <input
-            type="text"
-            placeholder="Search nodes..."
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-            onKeyDown={e => {
-              if (e.key === 'Enter' && filteredNodes.length === 1) {
-                simulateNodeClick(filteredNodes[0].name);
-              }
-            }}
-            style={{ padding: '5px', width: '200px' }} // Fixed width for the input
-          />
-          {searchInput && (
-            <div ref={dropdownRef} style={{ background: 'white', padding: '10px', border: '1px solid #ddd', maxHeight: '200px', overflowY: 'auto', marginTop: '5px', width: '100%' }}>
-              {filteredNodes.map((node) => (
-                <div
-                  key={node.id}
-                  onClick={(e) => onDropdownItemClick(node,e)}
-                  style={{ cursor: 'pointer', padding: '5px' }}
-                >
-                  {node.name}
-                </div>
-              ))}
+            <div
+                ref={searchInputRef}
+                style={{
+                    position: "absolute",
+                    right: "10px",
+                    top: "10px",
+                    zIndex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-end",
+                }}
+            >
+                <input
+                    type="text"
+                    placeholder="Search nodes..."
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter" && filteredNodes.length === 1) {
+                            simulateNodeClick(filteredNodes[0].name);
+                        }
+                    }}
+                    style={{ padding: "5px", width: "200px" }} // Fixed width for the input
+                />
+                {searchInput && (
+                    <div
+                        ref={dropdownRef}
+                        style={{
+                            background: "white",
+                            padding: "10px",
+                            border: "1px solid #ddd",
+                            maxHeight: "200px",
+                            overflowY: "auto",
+                            marginTop: "5px",
+                            width: "100%",
+                        }}
+                    >
+                        {filteredNodes.map((node) => (
+                            <div
+                                key={node.id}
+                                onClick={(e) => onDropdownItemClick(node, e)}
+                                style={{ cursor: "pointer", padding: "5px" }}
+                            >
+                                {node.name}
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
-          )}
+            <ForceGraph3D
+                graphData={graphData}
+                nodeAutoColorBy="citizenship"
+                enableNodeDrag={false}
+                backgroundColor="#222"
+                // nodeLabel = { showNames ? 'name' : '' }
+                nodeRelSize={10}
+                onNodeClick={handleNodeClick}
+                linkWidth={(link) => (highlightLinks.has(link) ? 2.5 : 1)}
+                nodeCanvasObjectMode={(node) =>
+                    highlightNodes.has(node) ? "before" : undefined
+                }
+                nodeCanvasObject={nodeCanvasObject}
+                // onNodeHover={handleNodeHover}
+                // onLinkHover={handleLinkHover}
+                linkColor={linkColor}
+                nodeColor={nodeColor}
+            />
+            {showIframe && (
+                <div
+                    className="iframe-container"
+                    style={{
+                        position: "absolute",
+                        left: "10px",
+                        top: "10px",
+                        width: "30%",
+                        height: "100%",
+                        zIndex: 10000,
+                    }}
+                >
+                    <iframe
+                        src={iframeUrl}
+                        style={{
+                            width: "100%",
+                            height: "100%",
+                            border: "none",
+                        }}
+                        title="Wikipedia"
+                    ></iframe>
+                </div>
+            )}{" "}
         </div>
-
-        <ForceGraph3D 
-            graphData = { graphData } 
-            nodeAutoColorBy = "citizenship"
-            enableNodeDrag = { false } 
-            backgroundColor = "#222"
-            // nodeLabel = { showNames ? 'name' : '' } 
-            nodeRelSize = { 10 } 
-            onNodeClick = { handleNodeClick } 
-            linkWidth = { link => highlightLinks.has(link) ? 2.5 : 1 } 
-            nodeCanvasObjectMode = { node => highlightNodes.has(node) ? 'before' : undefined } 
-            nodeCanvasObject = { nodeCanvasObject }
-            // onNodeHover={handleNodeHover}
-            // onLinkHover={handleLinkHover}
-            linkColor = { linkColor } nodeColor = { nodeColor }
-        />
-
-        {
-            showIframe && (
-                <div 
-            className="iframe-container" 
-            style={{ 
-              position: 'absolute', 
-              left: '10px',
-              top: '10px',
-              width: '30%', 
-              height: '100%', 
-              zIndex: 10000,
-            }}>
-            <iframe 
-              src={iframeUrl} 
-              style={{ 
-                width: '100%', 
-                height: '100%', 
-                border: 'none'
-              }} 
-              title="Wikipedia">
-            </iframe>
-          </div>
-            )
-        } </div>
     );
 };
 
 export default Graph3DVisualization;
-
-
 
 /*        nodeCanvasObject={(node, ctx, globalScale) => {
           const label = node.name;
