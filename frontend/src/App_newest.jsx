@@ -463,7 +463,7 @@ const Graph3DVisualization = () => {
                 >
                     <h2>Welcome to a beta preview of Clay.Network!</h2>
                     <p>
-                        This project visualizes the connections between potters
+                        This project visualizes the connections among potters
                         and ceramicists who have pages on Wikipedia. The dots
                         (also called nodes) are individual people, and the lines
                         between them represent relationships, which may be
