@@ -29,16 +29,16 @@ const Graph3DVisualization = () => {
 
     const fgRef = useRef();
 
-    useEffect(() => {
-        if (fgRef.current) {
-            // Directly modify the 'link' force to adjust the distance
-            fgRef.current.d3Force("link").distance(150);
+    // useEffect(() => {
+    //     if (fgRef.current) {
+    //         // Directly modify the 'link' force to adjust the distance
+    //         fgRef.current.d3Force("link").distance(100);
 
-            // Optionally, if you need to reheat (restart) the simulation
-            // This step may vary depending on the react-force-graph version and your specific needs
-            // fgRef.current.d3ReheatSimulation?.();
-        }
-    }, [fgRef.current]); // Depend on fgRef.current to ensure this runs once it's initialized
+    //         // Optionally, if you need to reheat (restart) the simulation
+    //         // This step may vary depending on the react-force-graph version and your specific needs
+    //         // fgRef.current.d3ReheatSimulation?.();
+    //     }
+    // }, [fgRef.current]); // Depend on fgRef.current to ensure this runs once it's initialized
 
     useEffect(() => {
         const fetchGraphData = async () => {
@@ -407,7 +407,7 @@ const Graph3DVisualization = () => {
                 enableNodeDrag={false}
                 backgroundColor="#222"
                 // nodeLabel = { showNames ? 'name' : '' }
-                nodeRelSize={12}
+                nodeRelSize={9}
                 onNodeClick={handleNodeClick}
                 linkWidth={(link) => (highlightLinks.has(link) ? 2.5 : 1)}
                 // nodeCanvasObjectMode={(node) =>
