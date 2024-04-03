@@ -3,6 +3,10 @@ import { ForceGraph3D } from "react-force-graph";
 
 import citizenshipColorMap from "./citizenshipColorMap";
 import Fuse from "fuse.js"; // Import Fuse.js
+import {
+    CSS2DRenderer,
+    CSS2DObject,
+} from "three/examples/jsm/renderers/CSS2DRenderer.js";
 
 const Graph3DVisualization = () => {
     const [graphData, setGraphData] = useState({ nodes: [], links: [] });
@@ -22,11 +26,6 @@ const Graph3DVisualization = () => {
     const [filteredNodes, setFilteredNodes] = useState([]); // For the search autofill results
     const searchInputRef = useRef(null);
     const dropdownRef = useRef(null);
-
-    const linkColor = (link) =>
-        highlightLinks.has(link)
-            ? "rgba(255, 255, 255, 2)"
-            : "rgba(255, 255, 255, 0.2)";
 
     useEffect(() => {
         const fetchGraphData = async () => {
@@ -96,7 +95,9 @@ const Graph3DVisualization = () => {
 
     const nodeColor = (node) => {
         // Check if there are highlighted nodes and the current node is not one of them
-        if (highlightNodes.size > 0 && !highlightNodes.has(node)) {
+        if (node == selectedNode) {
+            return "rgba(255, 111, 111, 1)";
+        } else if (highlightNodes.size > 0 && !highlightNodes.has(node)) {
             return "rgba(255, 255, 255, 0.1)"; // Dimmed color for non-highlighted nodes
         } else if (highlightNodes.has(node)) {
             return "rgba(255, 255, 255, 1)"; // Highlight color
@@ -108,6 +109,11 @@ const Graph3DVisualization = () => {
         return color;
     };
 
+    const linkColor = (link) =>
+        highlightLinks.has(link)
+            ? "rgba(255, 255, 255, 2)"
+            : "rgba(255, 255, 255, 0.2)";
+
     const updateHighlight = () => {
         setHighlightNodes(highlightNodes);
         setHighlightLinks(highlightLinks);
@@ -117,7 +123,6 @@ const Graph3DVisualization = () => {
 
     //     highlightNodes.clear();
     //     highlightLinks.clear();
-    //     // Add all nodes and links back to their respective highlight sets if you want them all visible
     //     graphData.nodes.forEach(node => highlightNodes.add(node));
     //     graphData.links.forEach(link => highlightLinks.add(link));
     //     updateHighlight()
@@ -131,7 +136,6 @@ const Graph3DVisualization = () => {
 
         console.log("unhighlightAllNodes");
 
-        // // Add all nodes and links back to their respective highlight sets if you want them all visible
         // graphData.nodes.forEach(node => highlightNodes.add(node));
         // graphData.links.forEach(link => highlightLinks.add(link));
         updateHighlight();
@@ -148,14 +152,29 @@ const Graph3DVisualization = () => {
     };
 
     const nodeCanvasObject = (node, ctx, globalScale) => {
+        console.log("highlightNodes.has(node)!!!!!!!!");
+        // if (highlightNodes.has(node)) {
         const label = node.name;
-        const fontSize = 12 / globalScale;
-        // Ensure full opacity by default
-        const alpha = 1;
-        ctx.globalAlpha = alpha; // Apply full opacity
+        const fontSize = 12 / globalScale; // Adjust font size based on global scale for readability
+        ctx.globalAlpha = 1; // Ensure the label is fully opaque
         ctx.font = `${fontSize}px Sans-Serif`;
-        ctx.fillStyle = "rgba(255, 255, 255, 1)"; // Node fill color
+        ctx.fillStyle = "rgba(255, 255, 255, 1)"; // White color for highlighted nodes
+        // Calculate text width and position the label accordingly
+        const textWidth = ctx.measureText(label).width;
+        const bckgDimensions = [textWidth, fontSize].map(
+            (n) => n + fontSize * 0.2,
+        ); // some padding
+        ctx.fillStyle = "rgba(255, 165, 0, 0.8)"; // orange background for better visibility
+        ctx.fillRect(
+            node.x - bckgDimensions[0] / 2,
+            node.y - bckgDimensions[1] / 2,
+            ...bckgDimensions,
+        );
+        ctx.textAlign = "center"; // Center the text above the node
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = "darkgrey"; // Text color for highlighted nodes
         ctx.fillText(label, node.x, node.y);
+        // }
     };
 
     useEffect(() => {
@@ -377,10 +396,27 @@ const Graph3DVisualization = () => {
                 nodeRelSize={10}
                 onNodeClick={handleNodeClick}
                 linkWidth={(link) => (highlightLinks.has(link) ? 2.5 : 1)}
-                nodeCanvasObjectMode={(node) =>
-                    highlightNodes.has(node) ? "before" : undefined
-                }
-                nodeCanvasObject={nodeCanvasObject}
+                // nodeCanvasObjectMode={(node) =>
+                //     highlightNodes.has(node) ? "before" : undefined
+                // }
+                // nodeCanvasObject={nodeCanvasObject}
+                nodeThreeObject={(node, ctx, globalScale) => {
+                    // Check if the node is highlighted
+                    if (highlightNodes.has(node)) {
+                        // Create and return a custom label or object for highlighted nodes
+                        console.log("AAAAAAAAAAAAAAA");
+                        const nodeEl = document.createElement("div");
+                        nodeEl.textContent = node.name;
+                        nodeEl.style.color = "#ddd";
+                        nodeEl.style.fontSize = "12px";
+                        nodeEl.style.textShadow =
+                            "2px 2px 3px rgba(0, 0, 0, 1)";
+                        nodeEl.className = "node-label";
+                        return new CSS2DObject(nodeEl);
+                    }
+                }}
+                nodeThreeObjectExtend={true}
+                extraRenderers={[new CSS2DRenderer()]}
                 // onNodeHover={handleNodeHover}
                 // onLinkHover={handleLinkHover}
                 linkColor={linkColor}
@@ -391,8 +427,8 @@ const Graph3DVisualization = () => {
                     className="iframe-container"
                     style={{
                         position: "absolute",
-                        left: "10px",
-                        top: "10px",
+                        left: "2px",
+                        top: "2px",
                         width: "30%",
                         minWidth: "500px",
                         height: "100%",
@@ -470,10 +506,3 @@ const Graph3DVisualization = () => {
 };
 
 export default Graph3DVisualization;
-
-/*        nodeCanvasObject={(node, ctx, globalScale) => {
-          const label = node.name;
-          const fontSize = 12/globalScale;
-          ctx.font = `${fontSize}px Sans-Serif`;
-          ctx.fillText(label, node.x, node.y);
-        }}*/
