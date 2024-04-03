@@ -27,6 +27,19 @@ const Graph3DVisualization = () => {
     const searchInputRef = useRef(null);
     const dropdownRef = useRef(null);
 
+    const fgRef = useRef();
+
+    useEffect(() => {
+        if (fgRef.current) {
+            // Directly modify the 'link' force to adjust the distance
+            fgRef.current.d3Force("link").distance(150);
+
+            // Optionally, if you need to reheat (restart) the simulation
+            // This step may vary depending on the react-force-graph version and your specific needs
+            // fgRef.current.d3ReheatSimulation?.();
+        }
+    }, [fgRef.current]); // Depend on fgRef.current to ensure this runs once it's initialized
+
     useEffect(() => {
         const fetchGraphData = async () => {
             try {
@@ -388,18 +401,20 @@ const Graph3DVisualization = () => {
                 )}
             </div>
             <ForceGraph3D
+                ref={fgRef}
                 graphData={graphData}
                 nodeAutoColorBy="citizenship"
                 enableNodeDrag={false}
                 backgroundColor="#222"
                 // nodeLabel = { showNames ? 'name' : '' }
-                nodeRelSize={10}
+                nodeRelSize={12}
                 onNodeClick={handleNodeClick}
                 linkWidth={(link) => (highlightLinks.has(link) ? 2.5 : 1)}
                 // nodeCanvasObjectMode={(node) =>
                 //     highlightNodes.has(node) ? "before" : undefined
                 // }
                 // nodeCanvasObject={nodeCanvasObject}
+
                 nodeThreeObject={(node, ctx, globalScale) => {
                     // Check if the node is highlighted
                     if (highlightNodes.has(node)) {
@@ -409,6 +424,7 @@ const Graph3DVisualization = () => {
                         nodeEl.textContent = node.name;
                         nodeEl.style.color = "#ddd";
                         nodeEl.style.fontSize = "12px";
+                        node.transparent = "false";
                         nodeEl.style.textShadow =
                             "2px 2px 3px rgba(0, 0, 0, 1)";
                         nodeEl.className = "node-label";
