@@ -483,7 +483,7 @@ const Graph3DVisualization = () => {
                         and ceramicists who have pages on Wikipedia. The dots
                         (also called nodes) are individual people, and the lines
                         between them represent relationships, which may be
-                        teacher/student or merely acquaintance.{" "}
+                        teacher/student or merely acquaintance.
                     </p>{" "}
                     <p>
                         To explore the data, you can click a dot/node, and it
