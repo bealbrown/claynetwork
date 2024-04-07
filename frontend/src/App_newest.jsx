@@ -20,7 +20,7 @@ const Graph3DVisualization = () => {
     // const [showNames, setShowNames] = useState(true); // Toggle between names and dots
     const [selectedNode, setSelectedNode] = useState(null); // For the data popup
     const [showDetailsView, setShowDetailsView] = useState(false); // Toggle details display
-    const [currentView, setCurrentView] = useState("WikipediaView");
+    const [currentView, setCurrentView] = useState("PotteryView");
     // const graphContainerRef = useRef(null);
     const [highlightNodes, setHighlightNodes] = useState(new Set());
     const [highlightLinks, setHighlightLinks] = useState(new Set());
@@ -447,9 +447,11 @@ const Graph3DVisualization = () => {
                     </p>
                     <p>
                         To explore the data, you can click a dot/node, and it
-                        will open the Wikipedia page for that person, as well as
-                        show you their immediate relationships. Also, you can
-                        search for people using the search bar in the top right!
+                        will open a detailed view for that person, which you can
+                        toggle between showing their pottery, or their Wikipedia
+                        page, as well as show you their immediate relationships.
+                        Also, you can search for people using the search bar in
+                        the top right!
                     </p>
                     <p>
                         You can see the camera controls on the bottom: left
