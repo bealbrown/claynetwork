@@ -4,7 +4,7 @@ const PotteryView = ({ potter_name }) => {
     const [images, setImages] = useState([]);
 
     const formattedName = potter_name.replace(/\s/g, "_");
-    const baseLink = `http://157.245.2.103/images/${formattedName}`;
+    const baseLink = `https://157.245.2.103/images/${formattedName}`;
 
     useEffect(() => {
         const initialImages = [];
