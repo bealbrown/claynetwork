@@ -2,8 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import { ForceGraph3D } from "react-force-graph";
 
 import citizenshipColorMap from "./citizenshipColorMap";
-
-import DetailsView from "./detailsView";
 import Fuse from "fuse.js"; // Import Fuse.js
 import {
     CSS2DRenderer,
@@ -12,15 +10,11 @@ import {
 
 const Graph3DVisualization = () => {
     const [graphData, setGraphData] = useState({ nodes: [], links: [] });
-    const [dimensions, setDimensions] = useState({
-        width: window.innerWidth,
-        height: window.innerHeight,
-    });
     // const [nodeSize, setNodeSize] = useState(10); // Default node size
     // const [showNames, setShowNames] = useState(true); // Toggle between names and dots
     const [selectedNode, setSelectedNode] = useState(null); // For the data popup
-    const [showDetailsView, setShowDetailsView] = useState(false); // Toggle details display
-    const [currentView, setCurrentView] = useState("WikipediaView");
+    const [iframeUrl, setIframeUrl] = useState(""); // For the Wikipedia iframe
+    const [showIframe, setShowIframe] = useState(false); // Toggle iframe display
     // const graphContainerRef = useRef(null);
     const [highlightNodes, setHighlightNodes] = useState(new Set());
     const [highlightLinks, setHighlightLinks] = useState(new Set());
@@ -138,15 +132,6 @@ const Graph3DVisualization = () => {
         setHighlightLinks(highlightLinks);
     };
 
-    // const highlightAllNodes = () => {
-
-    //     highlightNodes.clear();
-    //     highlightLinks.clear();
-    //     graphData.nodes.forEach(node => highlightNodes.add(node));
-    //     graphData.links.forEach(link => highlightLinks.add(link));
-    //     updateHighlight()
-    // };
-
     const unhighlightAllNodes = () => {
         console.log(graphData);
 
@@ -168,6 +153,41 @@ const Graph3DVisualization = () => {
         node.links.forEach((link) => highlightLinks.add(link));
 
         updateHighlight();
+    };
+
+    // const highlightAllNodes = () => {
+
+    //     highlightNodes.clear();
+    //     highlightLinks.clear();
+    //     graphData.nodes.forEach(node => highlightNodes.add(node));
+    //     graphData.links.forEach(link => highlightLinks.add(link));
+    //     updateHighlight()
+    // };
+
+    const nodeCanvasObject = (node, ctx, globalScale) => {
+        console.log("highlightNodes.has(node)!!!!!!!!");
+        // if (highlightNodes.has(node)) {
+        const label = node.name;
+        const fontSize = 12 / globalScale; // Adjust font size based on global scale for readability
+        ctx.globalAlpha = 1; // Ensure the label is fully opaque
+        ctx.font = `${fontSize}px Sans-Serif`;
+        ctx.fillStyle = "rgba(255, 255, 255, 1)"; // White color for highlighted nodes
+        // Calculate text width and position the label accordingly
+        const textWidth = ctx.measureText(label).width;
+        const bckgDimensions = [textWidth, fontSize].map(
+            (n) => n + fontSize * 0.2,
+        ); // some padding
+        ctx.fillStyle = "rgba(255, 165, 0, 0.8)"; // orange background for better visibility
+        ctx.fillRect(
+            node.x - bckgDimensions[0] / 2,
+            node.y - bckgDimensions[1] / 2,
+            ...bckgDimensions,
+        );
+        ctx.textAlign = "center"; // Center the text above the node
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = "darkgrey"; // Text color for highlighted nodes
+        ctx.fillText(label, node.x, node.y);
+        // }
     };
 
     useEffect(() => {
@@ -194,18 +214,18 @@ const Graph3DVisualization = () => {
             try {
                 if (distance < threshold) {
                     if (
-                        showDetailsView &&
-                        !event.target.closest(".details-view-container") &&
+                        showIframe &&
+                        !event.target.closest(".iframe-container") &&
                         !searchInputRef.current.contains(event.target)
                     ) {
-                        setShowDetailsView(false);
+                        setShowIframe(false);
                         setSelectedNode(null); // Deselect
 
                         console.log("click outside");
                         // Additional check to see if the click is outside the nodes/graph
 
                         // Resetting view to default if click is outside the graph nodes
-                        setShowDetailsView(false);
+                        setShowIframe(false);
                         // Clearing highlights
                         // highlightAllNodes()
                         unhighlightAllNodes();
@@ -225,44 +245,40 @@ const Graph3DVisualization = () => {
             document.removeEventListener("mousedown", handleMouseDown);
             document.removeEventListener("click", handleClickOutside);
         };
-    }, [showDetailsView]); // Dependency on showIframe only
+    }, [showIframe]); // Dependency on showIframe only
 
     // useEffect(() => {
-    //     const handleClickOutside = (event) => {
-    //         if (
-    //             showIframe &&
-    //             !event.target.closest(".details-view-container") &&
-    //             !searchInputRef.current.contains(event.target) &&
-    //             !dropdownRef.current.contains(event.target)
-    //         ) {
-    //             setShowDetailsView(false);
+    //     const handleClickOutside = event => {
+    //         if (showIframe && !event.target.closest('.iframe-container') && !searchInputRef.current.contains(event.target) && !dropdownRef.current.contains(event.target)) {
+    //             setShowIframe(false);
     //         }
     //     };
 
-    //     window.addEventListener("click", handleClickOutside);
+    //     window.addEventListener('click', handleClickOutside);
     //     return () => {
-    //         window.removeEventListener("click", handleClickOutside);
+    //         window.removeEventListener('click', handleClickOutside);
     //     };
     // }, [showIframe]);
 
     const handleNodeClick = (node) => {
         // Check if the node is in the highlightNodes set
         console.log("highlightNodes is", highlightNodes);
-        // if (!highlightNodes.has(node) && highlightNodes.size > 0) {
-        //     // If the node is not highlighted and there are highlighted nodes, exit the function
-        //     console.log("Unclickable node clicked");
-        //     return; // This node is dimmed/unclickable, do nothing
-        // }
+        if (!highlightNodes.has(node) && highlightNodes.size > 0) {
+            // If the node is not highlighted and there are highlighted nodes, exit the function
+            console.log("Unclickable node clicked");
+            return; // This node is dimmed/unclickable, do nothing
+        }
         try {
             // Toggle selection if the same node is clicked again
             if (selectedNode && selectedNode.id === node.id) {
                 setSelectedNode(null); // Deselect
-                setShowDetailsView(false);
+                setShowIframe(false);
                 console.log("Same node clicked again");
             } else {
                 console.log("node clicked ", node);
                 setSelectedNode(node);
-                setShowDetailsView(true);
+                setShowIframe(true);
+                setIframeUrl(node.wikipedia_url);
 
                 // Update highlights based on the selected node
                 highlightOnlySelectedNodeGroup(node);
@@ -284,7 +300,9 @@ const Graph3DVisualization = () => {
             handleNodeClick(node);
             setSearchInput("");
             setFilteredNodes([]);
-            setShowDetailsView(true);
+            setShowIframe(true);
+            setIframeUrl(node.wikipedia_url);
+            console.log("showed the iframe");
         }
     };
 
@@ -307,8 +325,8 @@ const Graph3DVisualization = () => {
     // // Listen for clicks to close the iframe if clicking outside
     // useEffect(() => {
     //     const handleClickOutside = event => {
-    //         if (showIframe && !event.target.closest('.details-view-container')) {
-    //             setShowDetailsView(false);
+    //         if (showIframe && !event.target.closest('.iframe-container')) {
+    //             setShowIframe(false);
     //         }
     //     };
 
@@ -392,11 +410,16 @@ const Graph3DVisualization = () => {
                 nodeRelSize={9}
                 onNodeClick={handleNodeClick}
                 linkWidth={(link) => (highlightLinks.has(link) ? 2.5 : 1)}
+                // nodeCanvasObjectMode={(node) =>
+                //     highlightNodes.has(node) ? "before" : undefined
+                // }
+                // nodeCanvasObject={nodeCanvasObject}
+
                 nodeThreeObject={(node, ctx, globalScale) => {
                     // Check if the node is highlighted
                     if (highlightNodes.has(node)) {
                         // Create and return a custom label or object for highlighted nodes
-
+                        console.log("AAAAAAAAAAAAAAA");
                         const nodeEl = document.createElement("div");
                         nodeEl.textContent = node.name;
                         nodeEl.style.color = "#ddd";
@@ -415,13 +438,30 @@ const Graph3DVisualization = () => {
                 linkColor={linkColor}
                 nodeColor={nodeColor}
             />
-            {showDetailsView && (
-                <DetailsView
-                    currentView={currentView}
-                    setCurrentView={setCurrentView}
-                    selectedNode={selectedNode}
-                />
-            )}
+            {showIframe && (
+                <div
+                    className="iframe-container"
+                    style={{
+                        position: "absolute",
+                        left: "2px",
+                        top: "2px",
+                        width: "30%",
+                        minWidth: "500px",
+                        height: "100%",
+                        zIndex: 10000,
+                    }}
+                >
+                    <iframe
+                        src={iframeUrl}
+                        style={{
+                            width: "100%",
+                            height: "100%",
+                            border: "none",
+                        }}
+                        title="Wikipedia"
+                    ></iframe>
+                </div>
+            )}{" "}
             {showModal && (
                 <div
                     style={{
@@ -444,13 +484,13 @@ const Graph3DVisualization = () => {
                         (also called nodes) are individual people, and the lines
                         between them represent relationships, which may be
                         teacher/student or merely acquaintance.
-                    </p>
+                    </p>{" "}
                     <p>
                         To explore the data, you can click a dot/node, and it
                         will open the Wikipedia page for that person, as well as
                         show you their immediate relationships. Also, you can
                         search for people using the search bar in the top right!
-                    </p>
+                    </p>{" "}
                     <p>
                         You can see the camera controls on the bottom: left
                         click to rotate, mouse wheel to zoom, and right click to
