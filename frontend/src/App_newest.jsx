@@ -25,7 +25,11 @@ const Graph3DVisualization = () => {
     const [highlightNodes, setHighlightNodes] = useState(new Set());
     const [highlightLinks, setHighlightLinks] = useState(new Set());
 
+    const [settingsButtonRef, setSettingsButtonRef] = useState(false);
     const [showModal, setShowModal] = useState(true);
+
+    const [showSettingsModal, setShowSettingsModal] = useState(false); // State to control the visibility of the settings modal
+    const [mainWidth, setMainWidth] = useState(400); // State to hold the mainWidth value, adjust the initial value as needed
 
     // const [hoverNode, setHoverNode] = useState(null);
     const [searchInput, setSearchInput] = useState(""); // For the search input
@@ -304,6 +308,51 @@ const Graph3DVisualization = () => {
         }
     }, [searchInput, graphData.nodes]);
 
+    const renderSettingsModal = () => {
+        if (!showSettingsModal) return null; // Don't render the modal if not needed
+
+        return (
+            <div
+                style={{
+                    position: "fixed",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    backgroundColor: "white",
+                    padding: "20px",
+                    zIndex: 1000,
+                    maxWidth: "80%",
+                    borderRadius: "10px",
+                    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                }}
+            >
+                <h2>Settings</h2>
+                <label htmlFor="mainWidth">Main Width:</label>
+                <input
+                    id="mainWidth"
+                    type="number"
+                    value={mainWidth}
+                    onChange={(e) => setMainWidth(e.target.value)} // Update the mainWidth state
+                    style={{ marginLeft: "10px" }}
+                />
+                <button
+                    onClick={() => setShowSettingsModal(false)} // Hide the modal
+                    style={{
+                        marginLeft: "10px",
+                        padding: "10px 20px",
+                        cursor: "pointer",
+                        border: "none",
+                        borderRadius: "5px",
+                        backgroundColor: "#007bff",
+                        color: "white",
+                    }}
+                >
+                    Close
+                </button>
+            </div>
+        );
+    };
+
     // // Listen for clicks to close the iframe if clicking outside
     // useEffect(() => {
     //     const handleClickOutside = event => {
@@ -333,6 +382,32 @@ const Graph3DVisualization = () => {
 
     return (
         <div>
+            <div
+                style={{
+                    position: "absolute",
+                    right: "234px",
+                    top: "10px",
+                    zIndex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-end",
+                }}
+            >
+                <button
+                    onClick={() => setShowSettingsModal(true)}
+                    style={{
+                        padding: "6px 15px",
+                        cursor: "pointer",
+                        border: "none",
+                        borderRadius: "5px",
+                        backgroundColor: "#007bff",
+                        color: "white",
+                    }}
+                >
+                    ☰
+                </button>
+            </div>
+            {renderSettingsModal()}
             <div
                 ref={searchInputRef}
                 style={{
@@ -420,6 +495,7 @@ const Graph3DVisualization = () => {
                     currentView={currentView}
                     setCurrentView={setCurrentView}
                     selectedNode={selectedNode}
+                    mainWidth={mainWidth}
                 />
             )}
             {showModal && (

@@ -2,7 +2,12 @@ import React from "react";
 import PotteryView from "./potteryView";
 import WikipediaView from "./wikipediaView";
 
-const DetailsView = ({ currentView, setCurrentView, selectedNode }) => {
+const DetailsView = ({
+  currentView,
+  setCurrentView,
+  selectedNode,
+  mainWidth,
+}) => {
   // Define a custom style for the active view button
   const activeButtonStyle = {
     backgroundColor: "#333",
@@ -43,8 +48,8 @@ const DetailsView = ({ currentView, setCurrentView, selectedNode }) => {
         position: "absolute",
         left: "2px",
         top: "2px",
-        width: "30%",
-        minWidth: "500px",
+        width: `${mainWidth}px`,
+        minWidth: "300px",
         height: "100%",
         maxHeight: "100%",
         zIndex: 10000,
