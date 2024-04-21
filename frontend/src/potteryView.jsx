@@ -28,7 +28,7 @@ const PotteryView = ({ potter_name }) => {
         <div
             style={{
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+                gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))",
                 gap: "4px",
                 backgroundColor: "#222",
                 height: "100%",

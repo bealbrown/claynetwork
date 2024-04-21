@@ -28,8 +28,8 @@ const Graph3DVisualization = () => {
     const [settingsButtonRef, setSettingsButtonRef] = useState(false);
     const [showModal, setShowModal] = useState(true);
 
-    const [showSettingsModal, setShowSettingsModal] = useState(false); // State to control the visibility of the settings modal
-    const [mainWidth, setMainWidth] = useState(400); // State to hold the mainWidth value, adjust the initial value as needed
+    const [showSettingsModal, setShowSettingsModal] = useState(false);
+    const [mainWidth, setMainWidth] = useState(400);
 
     // const [hoverNode, setHoverNode] = useState(null);
     const [searchInput, setSearchInput] = useState(""); // For the search input
