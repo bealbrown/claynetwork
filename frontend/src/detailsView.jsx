@@ -80,6 +80,7 @@ const DetailsView = ({
       <div style={currentView === "PotteryView" ? visibleStyle : hiddenStyle}>
         <PotteryView
           potter_name={selectedNode.name.replace(/\s*\(.*?\)/, "").trim()}
+          mainWidth={mainWidth}
         />
       </div>
       <div style={currentView === "WikipediaView" ? visibleStyle : hiddenStyle}>

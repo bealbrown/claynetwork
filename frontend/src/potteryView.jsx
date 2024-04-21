@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const PotteryView = ({ potter_name }) => {
+const PotteryView = ({ potter_name, mainWidth }) => {
     const [images, setImages] = useState([]);
 
     const formattedName = potter_name.replace(/\s/g, "_");
@@ -28,7 +28,7 @@ const PotteryView = ({ potter_name }) => {
         <div
             style={{
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))",
+                gridTemplateColumns: `repeat(auto-fill, minmax(${mainWidth / 3}px, 1fr))`,
                 gap: "4px",
                 backgroundColor: "#222",
                 height: "100%",
