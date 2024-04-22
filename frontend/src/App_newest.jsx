@@ -30,7 +30,7 @@ const Graph3DVisualization = () => {
 
     const [showSettingsModal, setShowSettingsModal] = useState(false);
     const [detailsWidth, setdetailsWidth] = useState(400);
-    const [showLinkDetails, setShowLinkDetails] = useState(false); // State to hold the toggle status
+    const [showLinkDetails, setShowLinkDetails] = useState(true); // State to hold the toggle status
 
     // const [hoverNode, setHoverNode] = useState(null);
     const [searchInput, setSearchInput] = useState(""); // For the search input
@@ -542,7 +542,7 @@ const Graph3DVisualization = () => {
                         width: `calc(100% - ${detailsWidth}px - 2px)`, // Viewport width minus detailsWidth
                         backgroundColor: "#222",
                         borderTop: "1px solid #ddd",
-                        maxHeight: "200px",
+                        maxHeight: "130px",
                         overflowY: "auto",
                         padding: "4px",
                         boxSizing: "border-box",

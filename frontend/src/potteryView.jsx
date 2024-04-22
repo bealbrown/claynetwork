@@ -50,7 +50,7 @@ const PotteryView = ({ potter_name, detailsWidth }) => {
                         height: "80%",
                         backgroundColor: "rgba(0, 0, 0, 0.4)",
                         borderRadius: "10px",
-                        zIndex: 1000,
+                        zIndex: 10001,
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -65,6 +65,7 @@ const PotteryView = ({ potter_name, detailsWidth }) => {
                             flexDirection: "column",
                             alignItems: "center",
                             justifyContent: "center",
+                            zIndex: 10001,
                             padding: "10px",
                         }}
                         onClick={(e) => e.stopPropagation()} // Prevent click inside div from closing modal
@@ -73,9 +74,11 @@ const PotteryView = ({ potter_name, detailsWidth }) => {
                             src={selectedImage}
                             alt="Selected Pottery"
                             style={{
-                                maxWidth: "90%",
+                                maxWidth: "100%",
                                 maxHeight: "90%",
-                                minWidth: "90%",
+                                width: "auto",
+                                height: "100%",
+                                zIndex: 10001,
                             }}
                         />
                         <p style={{ color: "red", marginTop: "10px" }}>
