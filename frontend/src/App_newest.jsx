@@ -29,7 +29,8 @@ const Graph3DVisualization = () => {
     const [showModal, setShowModal] = useState(true);
 
     const [showSettingsModal, setShowSettingsModal] = useState(false);
-    const [mainWidth, setMainWidth] = useState(400);
+    const [detailsWidth, setdetailsWidth] = useState(400);
+    const [showLinkDetails, setShowLinkDetails] = useState(false); // State to hold the toggle status
 
     // const [hoverNode, setHoverNode] = useState(null);
     const [searchInput, setSearchInput] = useState(""); // For the search input
@@ -185,6 +186,9 @@ const Graph3DVisualization = () => {
         };
 
         const handleClickOutside = (event) => {
+            // kind of hacky but works
+            setShowModal(false);
+
             const endX = event.pageX;
             const endY = event.pageY;
 
@@ -203,6 +207,7 @@ const Graph3DVisualization = () => {
                         !searchInputRef.current.contains(event.target)
                     ) {
                         setShowDetailsView(false);
+                        setShowModal(false);
                         setSelectedNode(null); // Deselect
 
                         console.log("click outside");
@@ -327,12 +332,12 @@ const Graph3DVisualization = () => {
                 }}
             >
                 <h2>Settings</h2>
-                <label htmlFor="mainWidth">Main Width:</label>
+                <label htmlFor="detailsWidth">Side panel width (px):</label>
                 <input
-                    id="mainWidth"
+                    id="detailsWidth"
                     type="number"
-                    value={mainWidth}
-                    onChange={(e) => setMainWidth(e.target.value)} // Update the mainWidth state
+                    value={detailsWidth}
+                    onChange={(e) => setdetailsWidth(e.target.value)} // Update the detailsWidth state
                     style={{ marginLeft: "10px" }}
                 />
                 <button
@@ -349,6 +354,18 @@ const Graph3DVisualization = () => {
                 >
                     Close
                 </button>
+                <div>
+                    <label htmlFor="featureToggle">
+                        Show Connection Details:
+                    </label>
+                    <input
+                        id="featureToggle"
+                        type="checkbox"
+                        checked={showLinkDetails}
+                        onChange={(e) => setShowLinkDetails(e.target.checked)} // Toggle the state
+                        style={{ marginLeft: "10px" }}
+                    />
+                </div>
             </div>
         );
     };
@@ -382,6 +399,24 @@ const Graph3DVisualization = () => {
 
     return (
         <div>
+            {selectedNode && (
+                <div
+                    style={{
+                        position: "absolute",
+                        top: "10px",
+                        left: "50%",
+                        transform: "translateX(-50%)",
+                        zIndex: 2,
+                        backgroundColor: "#eee",
+                        color: "black",
+                        padding: "5px 50px",
+                        borderRadius: "5px",
+                        boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
+                    }}
+                >
+                    {selectedNode.name}
+                </div>
+            )}
             <div
                 style={{
                     position: "absolute",
@@ -495,8 +530,52 @@ const Graph3DVisualization = () => {
                     currentView={currentView}
                     setCurrentView={setCurrentView}
                     selectedNode={selectedNode}
-                    mainWidth={mainWidth}
+                    detailsWidth={detailsWidth}
                 />
+            )}
+            {selectedNode && showLinkDetails && (
+                <div
+                    style={{
+                        position: "fixed",
+                        bottom: 0,
+                        right: 0, // Right justified
+                        width: `calc(100% - ${detailsWidth}px - 2px)`, // Viewport width minus detailsWidth
+                        backgroundColor: "#222",
+                        borderTop: "1px solid #ddd",
+                        maxHeight: "200px",
+                        overflowY: "auto",
+                        padding: "4px",
+                        boxSizing: "border-box",
+                        zIndex: 100000,
+                        color: "#ddd",
+                    }}
+                >
+                    <ul>
+                        {selectedNode.links && selectedNode.links.length > 0 ? (
+                            selectedNode.links.map((link, index) => {
+                                // Determine the correct node name to display based on the selectedNode
+                                const nodeNameToShow =
+                                    link.source.name === selectedNode.name
+                                        ? link.target.name
+                                        : link.source.name;
+
+                                return (
+                                    <p key={index}>
+                                        <b style={{ color: "#555" }}>
+                                            {link.source.name}
+                                            {" → "}
+                                            {link.target.name}
+                                        </b>
+                                        {"  "}
+                                        {link.article_context}
+                                    </p>
+                                );
+                            })
+                        ) : (
+                            <div></div>
+                        )}
+                    </ul>
+                </div>
             )}
             {showModal && (
                 <div

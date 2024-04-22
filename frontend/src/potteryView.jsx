@@ -1,6 +1,20 @@
 import React, { useState, useEffect } from "react";
 
-const PotteryView = ({ potter_name, mainWidth }) => {
+const PotteryView = ({ potter_name, detailsWidth }) => {
+    const [modalOpen, setModalOpen] = useState(false);
+    const [selectedImage, setSelectedImage] = useState("");
+
+    const handleImageClick = async (index) => {
+        const txtUrl = images[index].src.replace(".jpeg", ".txt");
+        try {
+            const response = await fetch(txtUrl);
+            const largeImageUrl = await response.text();
+            setSelectedImage(largeImageUrl.trim());
+            setModalOpen(true);
+        } catch (error) {
+            console.error("Failed to fetch large image URL:", error);
+        }
+    };
     const [images, setImages] = useState([]);
 
     const formattedName = potter_name.replace(/\s/g, "_");
@@ -25,41 +39,95 @@ const PotteryView = ({ potter_name, mainWidth }) => {
     };
 
     return (
-        <div
-            style={{
-                display: "grid",
-                gridTemplateColumns: `repeat(auto-fill, minmax(${mainWidth / 3}px, 1fr))`,
-                gap: "4px",
-                backgroundColor: "#222",
-                height: "100%",
-                overflow: "auto",
-            }}
-        >
-            {images.map(
-                (image, index) =>
-                    image.isValid && ( // Render only if image isValid is true
-                        <div
-                            key={index}
+        <div style={{ height: "100%", overflow: "auto" }}>
+            {modalOpen && (
+                <div
+                    style={{
+                        position: "fixed",
+                        top: "10%",
+                        left: "30%",
+                        width: "40%",
+                        height: "80%",
+                        backgroundColor: "rgba(0, 0, 0, 0.4)",
+                        borderRadius: "10px",
+                        zIndex: 1000,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                    }}
+                    onClick={() => setModalOpen(false)} // Close modal on background click
+                >
+                    <div
+                        style={{
+                            width: "95%",
+                            height: "95%",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            padding: "10px",
+                        }}
+                        onClick={(e) => e.stopPropagation()} // Prevent click inside div from closing modal
+                    >
+                        <img
+                            src={selectedImage}
+                            alt="Selected Pottery"
                             style={{
-                                width: "100%",
-                                paddingBottom: "100%",
-                                position: "relative",
+                                maxWidth: "90%",
+                                maxHeight: "90%",
+                                minWidth: "90%",
                             }}
-                        >
-                            <img
-                                src={image.src}
-                                alt={`Pottery ${index + 1}`}
-                                style={{
-                                    position: "absolute",
-                                    width: "100%",
-                                    height: "100%",
-                                    objectFit: "cover",
-                                }}
-                                onError={() => handleImageError(index)} // Handle loading error
-                            />
-                        </div>
-                    ),
+                        />
+                        <p style={{ color: "red", marginTop: "10px" }}>
+                            <a
+                                href={selectedImage}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                Original Image Source
+                            </a>
+                        </p>
+                    </div>
+                </div>
             )}
+
+            <div
+                style={{
+                    display: "grid",
+                    gridTemplateColumns: `repeat(auto-fill, minmax(${detailsWidth / 3}px, 1fr))`,
+                    gap: "4px",
+                    backgroundColor: "#222",
+                    height: "100%",
+                    overflow: "auto",
+                }}
+            >
+                {images.map(
+                    (image, index) =>
+                        image.isValid && ( // Render only if image isValid is true
+                            <div
+                                key={index}
+                                style={{
+                                    width: "100%",
+                                    paddingBottom: "100%",
+                                    position: "relative",
+                                }}
+                            >
+                                <img
+                                    onClick={() => handleImageClick(index)}
+                                    src={image.src}
+                                    alt={`Pottery ${index + 1}`}
+                                    style={{
+                                        position: "absolute",
+                                        width: "100%",
+                                        height: "100%",
+                                        objectFit: "cover",
+                                    }}
+                                    onError={() => handleImageError(index)} // Handle loading error
+                                />
+                            </div>
+                        ),
+                )}
+            </div>
         </div>
     );
 };

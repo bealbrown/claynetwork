@@ -6,7 +6,7 @@ const DetailsView = ({
   currentView,
   setCurrentView,
   selectedNode,
-  mainWidth,
+  detailsWidth,
 }) => {
   // Define a custom style for the active view button
   const activeButtonStyle = {
@@ -48,7 +48,7 @@ const DetailsView = ({
         position: "absolute",
         left: "2px",
         top: "2px",
-        width: `${mainWidth}px`,
+        width: `${detailsWidth}px`,
         minWidth: "300px",
         height: "100%",
         maxHeight: "100%",
@@ -80,7 +80,7 @@ const DetailsView = ({
       <div style={currentView === "PotteryView" ? visibleStyle : hiddenStyle}>
         <PotteryView
           potter_name={selectedNode.name.replace(/\s*\(.*?\)/, "").trim()}
-          mainWidth={mainWidth}
+          detailsWidth={detailsWidth}
         />
       </div>
       <div style={currentView === "WikipediaView" ? visibleStyle : hiddenStyle}>
