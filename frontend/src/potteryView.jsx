@@ -68,7 +68,10 @@ const PotteryView = ({ potter_name, detailsWidth }) => {
                             zIndex: 10001,
                             padding: "10px",
                         }}
-                        onClick={(e) => e.stopPropagation()} // Prevent click inside div from closing modal
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setModalOpen(false);
+                        }}
                     >
                         <img
                             src={selectedImage}
@@ -77,7 +80,7 @@ const PotteryView = ({ potter_name, detailsWidth }) => {
                                 maxWidth: "100%",
                                 maxHeight: "90%",
                                 width: "auto",
-                                height: "100%",
+                                height: "auto",
                                 zIndex: 10001,
                             }}
                         />
@@ -118,6 +121,7 @@ const PotteryView = ({ potter_name, detailsWidth }) => {
                                 <img
                                     onClick={() => handleImageClick(index)}
                                     src={image.src}
+                                    className="image-hover-darken"
                                     alt={`Pottery ${index + 1}`}
                                     style={{
                                         position: "absolute",

@@ -29,7 +29,7 @@ const Graph3DVisualization = () => {
     const [showModal, setShowModal] = useState(true);
 
     const [showSettingsModal, setShowSettingsModal] = useState(false);
-    const [detailsWidth, setdetailsWidth] = useState(400);
+    const [detailsWidth, setdetailsWidth] = useState(500);
     const [showLinkDetails, setShowLinkDetails] = useState(true); // State to hold the toggle status
 
     // const [hoverNode, setHoverNode] = useState(null);
