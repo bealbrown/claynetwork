@@ -331,19 +331,12 @@ const Graph3DVisualization = () => {
                     boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
                 }}
             >
-                <h2>Settings</h2>
-                <label htmlFor="detailsWidth">Side panel width (px):</label>
-                <input
-                    id="detailsWidth"
-                    type="number"
-                    value={detailsWidth}
-                    onChange={(e) => setdetailsWidth(e.target.value)} // Update the detailsWidth state
-                    style={{ marginLeft: "10px" }}
-                />
                 <button
                     onClick={() => setShowSettingsModal(false)} // Hide the modal
                     style={{
-                        marginLeft: "10px",
+                        // marginLeft: "auto",
+                        float: "right",
+                        marginRight: "auto",
                         padding: "10px 20px",
                         cursor: "pointer",
                         border: "none",
@@ -354,6 +347,33 @@ const Graph3DVisualization = () => {
                 >
                     Close
                 </button>
+                <h2>Info and Settings</h2>
+                <p>
+                    {" "}
+                    Camera controls are: left click to rotate, mouse wheel to
+                    zoom, and right click to pan. On mobile, two fingers to pan,
+                    pinch to zoom. When you click a node, you see the
+                    connections an individual has to other individuals. Here in
+                    settings, you can decide whether you want to see the textual
+                    context for their connection on the bottom of the screen.{" "}
+                </p>{" "}
+                <p>
+                    {" "}
+                    At the top of the details pane on the left, when a node is
+                    selected, you can toggle between Wikipedia and Pottery
+                    views. Click on an image in the pottery view to open it, and
+                    click on the image to close it.
+                </p>
+                <label htmlFor="detailsWidth">
+                    Side panel width (in pixels):
+                </label>
+                <input
+                    id="detailsWidth"
+                    type="number"
+                    value={detailsWidth}
+                    onChange={(e) => setdetailsWidth(e.target.value)} // Update the detailsWidth state
+                    style={{ marginLeft: "10px" }}
+                />
                 <div>
                     <label htmlFor="featureToggle">
                         Show Connection Details:
@@ -593,6 +613,7 @@ const Graph3DVisualization = () => {
                     }}
                 >
                     <h2>Welcome to a beta preview of Clay.Network!</h2>
+
                     <p>
                         This project visualizes the connections among potters
                         and ceramicists who have pages on Wikipedia. The dots
@@ -609,15 +630,18 @@ const Graph3DVisualization = () => {
                         the top right!
                     </p>
                     <p>
-                        You can see the camera controls on the bottom: left
-                        click to rotate, mouse wheel to zoom, and right click to
-                        pan.
+                        Camera controls are: left click to rotate, mouse wheel
+                        to zoom, and right click to pan.
                     </p>
                     <p>
                         I'm working on improving this dataset, which will
                         include a more complete scrape of Wikipedia (all
                         languages!), as well as including other sources of
                         information linking potters and ceramicists together.
+                    </p>
+                    <p>
+                        Please send comments and suggestions to
+                        <b> claynetwork@proton.me</b>
                     </p>
                     <button
                         onClick={() => setShowModal(false)}
