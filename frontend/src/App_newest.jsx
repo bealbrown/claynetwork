@@ -5,6 +5,7 @@ import citizenshipColorMap from "./citizenshipColorMap";
 
 import DetailsView from "./detailsView";
 import Fuse from "fuse.js"; // Import Fuse.js
+import { isDesktop, isTablet } from "react-device-detect";
 import {
     CSS2DRenderer,
     CSS2DObject,
@@ -29,7 +30,10 @@ const Graph3DVisualization = () => {
     const [showModal, setShowModal] = useState(true);
 
     const [showSettingsModal, setShowSettingsModal] = useState(false);
-    const [detailsWidth, setdetailsWidth] = useState(500);
+
+    const initialDetailsWidth = isTablet ? 400 : 500;
+    const [detailsWidth, setdetailsWidth] = useState(initialDetailsWidth);
+
     const [showLinkDetails, setShowLinkDetails] = useState(true); // State to hold the toggle status
 
     // const [hoverNode, setHoverNode] = useState(null);

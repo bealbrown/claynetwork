@@ -23,7 +23,7 @@ const RootComponent = () => {
         <div style={{ padding: "2%" }}>
           <p>
             Hello, this website only works on tablet or desktop, since there is
-            a large amount information to display.{" "}
+            a large amount information to display.
           </p>{" "}
           <p>
             It is a database of the works and connections between potters and
